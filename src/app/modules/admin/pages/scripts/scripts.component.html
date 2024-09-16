@@ -1,0 +1,221 @@
+<div class="colum d-flex justify-content-between align-items-center">
+    <div>
+        <h1 class="mt-4">Scripts</h1>
+    </div>
+    <div>
+        <button class="btn btn-primary" (click)="openModalAdds()">Agregar</button>
+    </div>
+</div>
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="bi bi-filetype-sql"></i>
+        Scripts
+    </div>
+    <div class="card-body">
+        <div class="datatable-wrapper datatable-loading no-footer">
+
+            <div class="datatable-container">
+                <table id="datatablesSimple" class="datatable-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Nombre</th>
+                            <th>Descripcion</th>
+                            <th>Script</th>
+                            <th>DB</th>
+                            <th>Nivel</th>
+                            <th class="text-center col-1">Editar</th>
+                            <th class="text-center col-1">Eliminar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of scriptactivos; let i=index">
+                            <th>{{i+1}}</th>
+                            <td>{{item.nombre}}</td>
+                            <td>{{item.descripcion}}</td>
+                            <td *ngIf="item.script.length > 70; else short">{{item.script | slice:0:50 }}...</td>
+                            <ng-template #short>
+                                <td>{{item.script | slice:0:70 }}</td>
+                            </ng-template>
+                            <div [ngSwitch]="item.database">
+                                <td *ngSwitchCase="0">Smart</td>
+                                <td *ngSwitchCase="1">OPA</td>
+                                <td *ngSwitchCase="2">Integrador</td>
+                            </div>
+
+                            <td *ngIf="item.nivel == 1 ; else admin">Usuario</td>
+
+                            <ng-template #admin>
+                                <td>Administrador</td>
+                            </ng-template>
+
+                            <td class="text-center"><i class="bi bi-pencil-square link"
+                                    (click)="openModalEdits(item.idscript)"></i>
+                            </td>
+                            <td class="text-center"><i class="bi bi-trash3 link"
+                                    (click)="openModalconfirm(item.idscript)"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal ADD-->
+<div class="modal fade" id="addModals" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Agregar Script</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="closeModalAdds()"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="formScripInsert" (ngSubmit)="isertSubmit()">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="col-form-label" for="nombre">Nombre:</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" formControlName="nombre">
+                            <p class="alert-color" *ngIf="nombre?.hasError('required') && nombre?.touched">El nombre es requerido</p>
+                            <p class="alert-color" *ngIf="nombre?.hasError('minlength') && nombre?.touched">Debe tener mínimo 5 caracteres</p>
+                            <p class="alert-color" *ngIf="nombre?.hasError('maxlength') && nombre?.touched">Debe tener maximo 30 caracteres</p>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label class="col-form-label" for="descripcion">Descripción:</label>
+                            <input type="text" class="form-control" id="descripcion" name="descripcion" formControlName="descripcion">
+                            <p class="alert-color" *ngIf="descripcion?.hasError('required') && descripcion?.touched">La descripcion es Requerida</p>
+                            <p class="alert-color" *ngIf="descripcion?.hasError('minlength') && descripcion?.touched">Debe tener mínimo 5 caracteres</p>
+                            <p class="alert-color" *ngIf="descripcion?.hasError('maxlength') && descripcion?.touched">Debe tener maximo 52 caracteres</p>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="script">Script:</label>
+                            <textarea class="form-control" id="script" rows="3" formControlName="script"></textarea>
+                            <p class="alert-color" *ngIf="script?.hasError('required') && script?.touched">El Script es Requerido</p>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="db">Base de Datos</label>
+                            <select name="db" id="db" class="form-select" formControlName="database">
+                                <option value="" selected>Elegir</option>
+                                <option value="0">Smart</option>
+                                <option value="1">Opa</option>
+                                <option value="2">Integrador</option>
+                            </select>
+                            <p class="alert-color" *ngIf="database?.hasError('required') && database?.touched">La base de datos es Requerida</p>
+                        </div>
+                        <div class="mt-3">
+                            <h6>Nivel</h6>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" id="usred" type="radio" name="nivel" [value]="1"
+                                    formControlName="nivel" checked>
+                                <label class="form-check-label" for="usred">Usuario</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" id="adm" type="radio" name="nivel" [value]="2"
+                                    formControlName="nivel">
+                                <label class="form-check-label" for="adm">Administrador</label>
+                            </div>
+                            <p class="alert-color" *ngIf="nivel?.hasError('required') && nivel?.touched">El nivel es Requerido</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Enviar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!--Modal Edit-->
+<div class="modal fade" id="editModals" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Editar Script</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="closeModalEdits()"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="formScripEdit" (ngSubmit)="editSubmit()">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="col-form-label" for="nombre">Nombre:</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" formControlName="nombreedi">
+                            <p class="alert-color" *ngIf="nombreedi?.hasError('required') && nombreedi?.touched">El nombre es requerido</p>
+                            <p class="alert-color" *ngIf="nombreedi?.hasError('minlength') && nombreedi?.touched">Debe tener mínimo 5 caracteres</p>
+                            <p class="alert-color" *ngIf="nombreedi?.hasError('maxlength') && nombreedi?.touched">Debe tener maximo 30 caracteres</p>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label class="col-form-label" for="descripcion">Descripción:</label>
+                            <input type="text" class="form-control" id="descripcion" name="descripcion" formControlName="descripcionedi">
+                            <p class="alert-color" *ngIf="descripcionedi?.hasError('required') && descripcionedi?.touched">La descripcion es Requerida</p>
+                            <p class="alert-color" *ngIf="descripcionedi?.hasError('minlength') && descripcionedi?.touched">Debe tener mínimo 5 caracteres</p>
+                            <p class="alert-color" *ngIf="descripcionedi?.hasError('maxlength') && descripcionedi?.touched">Debe tener maximo 52 caracteres</p>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="script">Script:</label>
+                            <textarea class="form-control" id="script" rows="3" formControlName="scriptedi"></textarea>
+                            <p class="alert-color" *ngIf="scriptedi?.hasError('required') && scriptedi?.touched">El Script es Requerido</p>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="db">Base de Datos</label>
+                            <select name="db" id="db" class="form-select" formControlName="databaseedi">
+                                <option value="" selected>Elegir</option>
+                                <option value="0">Smart</option>
+                                <option value="1">Opa</option>
+                                <option value="2">Integrador</option>
+                            </select>
+                            <p class="alert-color" *ngIf="databaseedi?.hasError('required') && databaseedi?.touched">La base de datos es Requerida</p>
+                        </div>
+                        <div class="mt-3">
+                            <h6>Nivel</h6>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="niveledi" [value]="1"
+                                    formControlName="niveledi" id="usre" >
+                                <label class="form-check-label" for="usre">Usuario</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" id="adme" type="radio" name="niveledi" [value]="2"
+                                    formControlName="niveledi">
+                                <label class="form-check-label" for="adme">Administrador</label>
+                            </div>
+                            <p class="alert-color" *ngIf="niveledi?.hasError('required') && nivel?.touched">El nivel es Requerido</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" name="idscript" formControlName="idscript">
+                        <button type="submit" class="btn btn-primary">Editar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal Confirm-->
+<div class="modal fade" id="modalconfirm" tabindex="-1" aria-labelledby="exampleModalLabel" data-bs-backdrop="static"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirmar</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="closeModalconfirm()"></button>
+            </div>
+            <div class="modal-body">
+                Seguro de Eliminar el Script?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                    (click)="closeModalconfirm()">No</button>
+                <button type="button" class="btn btn-primary" (click)="dltscrpt()">Si</button>
+            </div>
+        </div>
+    </div>
+</div>

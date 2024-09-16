@@ -1,0 +1,40 @@
+.enlace{
+  cursor: pointer;
+  text-decoration: none ;
+}
+
+.pendiente{
+  color: rgb(0, 100, 240);
+}
+
+.error{
+  color: rgb(255, 0, 0);
+}
+
+.finalizado{
+  color: rgb(0, 200, 0);
+  cursor: pointer;
+
+}
+
+
+.row-pag{
+  margin-left: 0.2em ;
+  margin-right: 0.2em;
+  border-radius: 1em;
+  background-color: rgb(255, 255, 255);
+  border: none;
+  width: 2em;
+  height: 2em;
+
+}
+
+.row-pag:hover{
+  background-color: rgba(0, 0, 0, 0.2);
+  
+}
+
+
+
+
+

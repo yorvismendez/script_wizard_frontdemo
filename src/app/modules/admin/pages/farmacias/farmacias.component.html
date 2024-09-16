@@ -1,0 +1,141 @@
+<div class="colum d-flex justify-content-between align-items-center">
+    <div>
+        <h1 class="mt-4">Farmacias</h1>
+    </div>
+    <div>
+        <button class="btn btn-primary" (click)="openModalAddf()">Agregar</button>
+    </div>
+</div>
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="bi bi-building"></i>
+        Farmacias
+    </div>
+    <div class="card-body">
+        <div class="datatable-wrapper datatable-loading no-footer sortable searchable fixed-columns">
+
+            <div class="datatable-container">
+                <table id="datatablesSimple" class="datatable-table">
+                    <thead>
+                        <tr>
+                            <th scope="col-1"></th>
+                            <th class="col-6">Codigo</th>
+                            <th class="col-6">Nombre</th>
+                            <th class="text-center col-1">Editar</th>
+                            <th class="text-center col-1">Eliminar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of farmactiv; let i=index">
+                            <th scope="row">{{i+1}}</th>
+                            <td>{{item.codigo}}</td>
+                            <td>{{item.nombre}}</td>
+                            <td class="text-center"><i class="bi bi-pencil-square link" (click)="openModalEditf(item.idfarmacia)"></i>
+                            </td>
+                            <td class="text-center"><i class="bi bi-trash3 link" (click)="openModalconfirm(item.idfarmacia)"></i></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--Modal ADD-->
+<div class="modal fade" id="addModalf" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Agregar Farmacia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModalAddf()"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="formInserFarm" (ngSubmit)="insertSubmit()">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="col-form-label" for="codigo">Código de Farmacia:</label>
+                            <input type="number" class="form-control" id="codigo" name="codigo" formControlName="codigo">
+                            <p class="alert-color" *ngIf="codigo?.hasError('required') && codigo?.touched">El Código es Requerido</p>
+                            <p class="alert-color" *ngIf="codigo?.hasError('max') && codigo?.touched">Debe tener maximo 10 caracteres</p>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label class="col-form-label" for="nombre">Nombre:</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" formControlName="nombre">
+                            <p class="alert-color" *ngIf="nombre?.hasError('required') && nombre?.touched">El Nombre es Requerido</p>
+                            <p class="alert-color" *ngIf="nombre?.hasError('maxlength') && nombre?.touched">Debe tener maximo 50 caracteres</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Enviar</button>
+                    </div>
+                </form>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+<!--Modal EDIT -->
+<div class="modal fade" id="editModalf" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Editar Farmacia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="closeModalEditf()"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="formEditFarm" (ngSubmit)="editSubmit()">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="col-form-label" for="codigo">Código de Farmacia:</label>
+                            <input type="number" class="form-control" id="codigo" name="codigo" formControlName="codigoe">
+                            <p class="alert-color" *ngIf="codigoe?.hasError('required') && codigoe?.touched">El Código es Requerido</p>
+                            <p class="alert-color" *ngIf="codigoe?.hasError('max') && codigoe?.touched">Debe tener maximo 10 caracteres</p>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label class="col-form-label" for="nombre">Nombre:</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" formControlName="nombree">
+                            <p class="alert-color" *ngIf="nombree?.hasError('required') && nombree?.touched">El Nombre es Requerido</p>
+                            <p class="alert-color" *ngIf="nombree?.hasError('maxlength') && nombree?.touched">Debe tener maximo 50 caracteres</p>
+                        </div>
+                    </div>
+                    <input type="hidden" formControlName="idfarmedit">
+                    <input type="hidden" formControlName="codigoedit">
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Confirm-->
+<div class="modal fade" id="modalconfirmf" tabindex="-1" aria-labelledby="exampleModalLabel" data-bs-backdrop="static"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirmar</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="closeModalconfirm()"></button>
+            </div>
+            <div class="modal-body">
+                Seguro de Eliminar la Farmacia?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                    (click)="closeModalconfirm()">No</button>
+                <button type="button" class="btn btn-primary" (click)="deletFarm()">Si</button>
+            </div>
+        </div>
+    </div>
+</div>

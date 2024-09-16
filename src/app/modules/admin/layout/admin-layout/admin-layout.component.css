@@ -1,0 +1,9 @@
+.navbar {
+    margin: 0 !important;
+    padding: 0 !important;
+    --bs-navbar-nav-link-padding-x: 0 !important;
+}
+
+.link{
+    cursor: pointer;
+}

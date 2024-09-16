@@ -1,0 +1,217 @@
+<div class="colum d-flex justify-content-between align-items-center">
+    <div>
+        <h1 class="mt-4">Ejecuciones</h1>
+    </div>
+    <div>
+        <button class="btn btn-primary" (click)="openModalAdd()">Nueva</button>
+    </div>
+</div>
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="bi bi-list-columns"></i>
+        Ejecuciones
+    </div>
+    <div class="card-body">
+        <div class="datatable-wrapper datatable-loading no-footer fixed-columns">
+
+            <div class="datatable-container">
+                <table id="datatablesSimple" class="datatable-table">
+                    <thead>
+                        <tr>
+                            <th>Descripcion</th>
+                            <th>Fecha</th>
+                            <th>Usuario</th>
+                            <th>Script</th>
+                            <th class="text-center col-md-2">Destinos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of ejecpag?.content;">
+                            <td>{{item.descripcion}}</td>
+                            <td>{{item.fechaformat}}</td>
+                            <td>{{item.idUsuario.name}}</td>
+                            <td>{{item.idScript.nombre}}</td>
+                            <td class="text-center"><a (click)="openModalDes(item.idejecucion)" class="enlace">Ver
+                                    Destinos <i class="bi bi-box-arrow-up-left"></i></a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="datatable-bottom">
+                <div *ngIf="ejecpag true" class="datatable-info">Mostrando {{ejecpag.pageable.offset + 1}} -
+                    {{ejecpag.pageable.offset + ejecpag.numberOfElements}} de {{ejecpag.totalElements}}</div>
+                <nav class="datatable-pagination">
+                    <ul class="datatable-pagination-list">
+                        <button (click)="consulEje(0)" [disabled]="primera" class="row-pag">
+                            <i class="bi bi-chevron-bar-left datatable-pagination-list-item-link"></i>
+                        </button>
+                        <button (click)="consulEje(ejecpag!.pageable.pageNumber - 1)" [disabled]="primera"
+                            class="row-pag">
+                            <i class="bi bi-chevron-left datatable-pagination-list-item-link"></i>
+                        </button>
+                        <button (click)="consulEje(ejecpag!.pageable.pageNumber + 1)" [disabled]="ultima"
+                            class="row-pag">
+                            <i class="bi bi-chevron-right datatable-pagination-list-item-link"></i>
+                        </button>
+                        <button (click)="consulEje(ejecpag!.totalPages - 1)" [disabled]="ultima" class="row-pag">
+                            <i class="bi bi-chevron-bar-right datatable-pagination-list-item-link"></i>
+                        </button>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!--Modal ADD-->
+<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Agregar Ejecucion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="closeModalAdd()"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="formEjecuciones" (ngSubmit)="ejecucionSubmit()">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="col-form-label" for="descripcion">Descripcion:</label>
+                            <input type="text" class="form-control" id="descripcion" name="descripcion"
+                                formControlName="descripcion">
+                            <p class="alert-color" *ngIf="descripcion?.hasError('required') && descripcion?.touched">La
+                                descripción es requerida</p>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="script">Script</label>
+                            <select name="script" id="script" class="form-select" formControlName="script">
+                                <option value="" selected>Elegir</option>
+                                <option *ngFor="let item of scripts" value="{{item.idscript}}" selected>{{item.nombre}}
+                                </option>
+
+                                <!-- <option value="1">Composicion</option>
+                                <option value="2">Zelle</option> -->
+                            </select>
+                            <p class="alert-color" *ngIf="script?.hasError('required') && script?.touched">El Script es
+                                requerido</p>
+                        </div>
+                    </div>
+                    <div class="form-group mt-3">
+                        <h6 class="mt-3">Destinos:</h6>
+                    </div>
+                    <div class="form-group form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="todas" value="todas" name="todas"
+                            formControlName="todas">
+                        <label class="form-check-label" for="todas"> Todas</label>
+                        <!-- <p class="alert-color" *ngIf="script?.hasError('required') && todas?.touched">El destino es requerido</p> -->
+                    </div>
+                    <div class="mt-3 row m-0 d-flex align-items-md-start  justify-content-start ">
+                        <div *ngFor="let item of farmactiva;"
+                            class="form-check form-check-inline m-0 col-12 col-sm-4 col-md-4 col-lg-3">
+                            <input class="form-check-input" type="checkbox" id={{item.idfarmacia}}
+                                value={{item.idfarmacia}} name={{item.idfarmacia}} formControlName={{item.idfarmacia}}>
+                            <label class="form-check-label" for={{item.idfarmacia}}>{{item.nombre}}</label>
+                        </div>
+
+                        <!--                        
+                        <div class="form-check form-check-inline col-md-3 p-0">
+                            <input class="form-check-input" type="checkbox" id="222" name="inlineCheckbo"
+                                value="option1" >
+                            <label class="form-check-label" for="222">Farmacia saas tropical</label>
+                        </div>
+                        <div class="form-check form-check-inline col-md-3 p-0">
+                            <input class="form-check-input" type="checkbox" id="444" name="inlineCheckb" value="option1"
+                                >
+                            <label class="form-check-label" for="444">Farmacia saas casa saas</label>
+                        </div>
+                        -->
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Enviar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!--Modal Destinos-->
+<div class="modal fade" id="DesModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Destinos</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="closeModalDes()"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="datatable-wrapper datatable-loading no-footer fixed-columns">
+
+                    <div class="datatable-container">
+                        <table id="datatablesSimple" class="datatable-table">
+                            <thead>
+                                <tr>
+                                    <th>Farmacia</th>
+                                    <th>Estado</th>
+                                    <th class="text-center"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr *ngFor="let item of destinos">
+                                    <td>{{item.idFarmacia.nombre}}</td>
+                                    <td [ngSwitch]="item.status">
+                                        <span *ngSwitchCase="0">Finalizado</span>
+                                        <span *ngSwitchCase="1">Pendiente</span>
+                                        <span *ngSwitchCase="2">Error</span>
+                                    </td>
+                                    <td [ngSwitch]="item.status" class="text-center">
+                                        <i *ngSwitchCase="0"><i class="bi bi-download h6 finalizado"
+                                                (click)="downloadExcel(item.iddestino.toString(), item.idFarmacia.nombre)"></i></i>
+                                        <i *ngSwitchCase="1"><i class="bi bi-hourglass-split h6 pendiente"></i></i>
+                                        <i *ngSwitchCase="2"><i class="bi bi-exclamation-triangle h6 error"></i></i>
+                                    </td>
+                                </tr>
+
+
+
+                                <!-- <tr>
+                                    <td>Farmacia Saas Tropical</td>
+                                    <td>Pendiente</td>
+                                    <td class="text-center"><i class="bi bi-hourglass-split h6 pendiente"></i></td>
+                                </tr>
+
+                                <tr>
+                                    <td>Farmacia Saas Hogar</td>
+                                    <td>Error</td>
+                                    <td class="text-center"><i class="bi bi-exclamation-triangle h6 error"></i></td>
+                                </tr>
+
+                                <tr>
+                                    <td>Farmacia Saas La Sierra</td>
+                                    <td>Finalizado</td>
+                                    <td class="text-center"><i class="bi bi-download h6 finalizado"
+                                            (click)="downloadExcel('18','Hogar')"></i></td>
+                                </tr> -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="descargarAll()">Descargar Todos <i class="bi bi-download"></i></button>                
+                <button type="button" class="btn btn-primary" (click)="closeModalDes()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>

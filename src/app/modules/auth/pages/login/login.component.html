@@ -1,0 +1,36 @@
+<section class="vh-100 w-100 h-100 back">
+    <div class="d-flex flex-column justify-content-between align-items-center w-100 h-100">
+        <div class="d-flex header w-100 justify-content-between p-3">
+            <img class="logosaas" src="../../../../../assets/img/logo_saas.svg">
+            <img src="../../../../../assets/img/logo_grupo_cobeca.png" class="logocob">
+        </div>
+        <div class="d-flex w-100 align-items-center justify-content-center">
+            <div class="d-flex col-md-3">
+                <div class="card shadow-2-strong d-flex align-items-center justify-content-center"
+                    style="border-radius: 1rem;">
+                    <div>
+                        <img class="logolog col-md" src="../../../../../assets/img/logo3.png">
+                    </div>
+                    <form class="card-body p-5 d-flex row" [formGroup]="formLogin" (ngSubmit)="loginSubmit()">
+
+                        <div class="form-outline mb-4">
+                            <label class="form-label" for="username">Usuario</label>
+                            <input autocomplete="off" type="text" id="username" class="form-control form-control-l" formControlName="username" />
+                            <p class="alert-color" *ngIf="username?.hasError('required') && username?.touched">El usuario es requerido</p>
+                        </div>
+                        <div class="form-outline mb-4">
+                            <label class="form-label" for="password">Contraseña</label>
+                            <input type="password" id="password" class="form-control form-control-l" formControlName="password" />
+                            <p class="alert-color" *ngIf="password?.hasError('required') && password?.touched">La clave es requerida</p>
+                        </div>
+                        <button
+                            class="btn btn-primary btn-l gap-3 d-flex gap-4 align-items-center justify-content-center"
+                            type="submit">Iniciar Sesión <i class="bi bi-box-arrow-in-left"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <footer class="w-100  d-flex justify-content-center">
+        </footer>
+    </div>
+</section>

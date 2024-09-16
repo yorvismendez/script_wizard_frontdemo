@@ -1,0 +1,33 @@
+
+
+.logolog{
+    width:15em;
+    margin-bottom: -5em !important;
+}
+
+footer{
+    height: 3em;
+    
+}
+
+.header{
+    height: 4em;
+}
+
+.back{
+    background-image: url("../../../../../assets/img/casaasblur.jpg");
+    background-size: cover;
+    background-repeat: no-repeat, repeat;
+    background-position: center;     
+    background-position-y: 0;
+    z-index: 1 !important;      
+}
+
+.logosaas{
+    margin-top: 1em;
+    height: 3em;
+}
+
+.logocob{
+    height: 6em;
+}

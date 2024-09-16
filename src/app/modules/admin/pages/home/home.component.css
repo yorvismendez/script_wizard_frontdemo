@@ -1,0 +1,27 @@
+.online{
+    color: rgb(0, 210, 0);
+}
+
+.offline{
+    color: rgb(210, 0 , 0);
+}
+
+
+.enlace{
+    cursor: pointer;
+    text-decoration: none ;
+  }
+  
+  .pendiente{
+    color: rgb(0, 100, 240);
+  }
+  
+  .error{
+    color: rgb(255, 0, 0);
+  }
+  
+  .finalizado{
+    color: rgb(0, 200, 0);
+    cursor: pointer;
+  
+  }

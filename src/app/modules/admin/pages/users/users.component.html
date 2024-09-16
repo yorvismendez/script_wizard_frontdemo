@@ -1,0 +1,189 @@
+<div class="colum d-flex justify-content-between align-items-center">
+    <div>
+        <h1 class="mt-4">Usuarios</h1>
+    </div>
+    <div>
+        <button class="btn btn-primary" (click)="openModalAddu()">Agregar</button>
+    </div>
+</div>
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="bi bi-person"></i>
+        Usuarios
+    </div>
+    <div class="card-body">
+        <div class="datatable-wrapper datatable-loading no-footer  fixed-columns">
+
+            <div class="datatable-container">
+                <table id="datatablesSimple" class="datatable-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Usuario</th>
+                            <th>Nombre</th>
+                            <th>Roles</th>
+                            <th>Estatus</th>
+                            <th class="text-center">Editar</th>                        
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of usersactiv; let i=index; let roles">
+                            <th scope="row">{{i+1}}</th>
+                            <td>{{item.username}}</td>
+                            <td>{{item.name}}</td>
+                            <td>
+                                <u class="roles" *ngFor="let role of item.rolesList">{{role.name | slice:5:10}} </u>
+                            </td>
+                            <td *ngIf="item.enabled == true; else inacti">Activo</td>
+                            <ng-template #inacti>
+                                <td>Inactivo</td>
+                            </ng-template>
+                            <td class="text-center"><i class="bi bi-pencil-square link" (click)="openModalEditu(item.username)"></i>
+                            </td>                            
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--Modal ADD-->
+<div class="modal fade" id="addModalu" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Agregar Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModalAddu()"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="formUsrInsert" (ngSubmit)="insertUsuario()">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="col-form-label" for="usuario">Usuario:</label>
+                            <input type="text" class="form-control" id="usuario" name="usuario" formControlName="usuario">
+                            <p class="alert-color" *ngIf="usuario?.hasError('required') && usuario?.touched">El Usuario es requerido</p>
+                            <p class="alert-color" *ngIf="usuario?.hasError('minlength') && usuario?.touched">Debe tener al menos 5 Caracteres</p>
+                            <p class="alert-color" *ngIf="usuario?.hasError('maxlength') && usuario?.touched">Debe tener maximo 20 Caracteres</p>
+                            <p class="alert-color" *ngIf="usuario?.hasError('nospacesvalidator') && usuario?.touched">No admite espacios</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label" for="nombre">Nombre:</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" formControlName="nombre">
+                            <p class="alert-color" *ngIf="nombre?.hasError('required') && nombre?.touched">El nombre es requerido</p>
+                            <p class="alert-color" *ngIf="nombre?.hasError('minlength') && nombre?.touched">Debe tener al menos 5 Caracteres</p>
+                            <p class="alert-color" *ngIf="nombre?.hasError('maxlength') && nombre?.touched">Debe tener maximo 30 Caracteres</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label" for="pass">Clave:</label>
+                            <input type="password" class="form-control" id="pass" name="pass" formControlName="clave">
+                            <p class="alert-color" *ngIf="clave?.hasError('required') && clave?.touched">La Clave es Requerida</p>
+                            <p class="alert-color" *ngIf="clave?.hasError('minlength') && clave?.touched">Debe tener al menos 10 Caracteres</p>
+                            <p class="alert-color" *ngIf="clave?.hasError('maxlength') && clave?.touched">Debe tener maximo 40 Caracteres</p>
+                            <p class="alert-color" *ngIf="clave?.hasError('passwordcomplexityvalidator') && clave?.touched">Debe tener al  menos un múmero y un caracter especial</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label" for="passcon">Confirmar clave:</label>
+                            <input type="password" class="form-control" id="passcon" name="passcon" formControlName="claveconfirm">
+                            <p class="alert-color" *ngIf="claveconfirm?.hasError('required') && claveconfirm?.touched"> La Confirmación es Requerida</p>
+                        </div>
+                        <div class="mt-3">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="user" name="user" value="option1"
+                                    checked disabled>
+                                <label class="form-check-label" for="user">Usuario</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="admin" name="admin" value="option1"
+                                    formControlName="admin">
+                                <label class="form-check-label" for="admin">Administrador</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Enviar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!--Modal EDIT-->
+<div class="modal fade" id="editModalu" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Editar Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModalEditu()"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="formUsrEdit" (ngSubmit)="EditUsusario()">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="col-form-label" for="usuarioe">Usuario:</label>
+                            <input type="text" class="form-control" id="usuarioe" name="usuarioe" formControlName="usuarioe">
+                            <p class="alert-color" *ngIf="usuarioe?.hasError('required') && usuarioe?.touched">El Usuario es requerido</p>
+                            <p class="alert-color" *ngIf="usuarioe?.hasError('minlength') && usuarioe?.touched">Debe tener al menos 5 Caracteres</p>
+                            <p class="alert-color" *ngIf="usuarioe?.hasError('maxlength') && usuarioe?.touched">Debe tener maximo 20 Caracteres</p>
+                            <p class="alert-color" *ngIf="usuarioe?.hasError('nospacesvalidator') && usuarioe?.touched">No admite espacios</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label" for="nombree">Nombre:</label>
+                            <input type="text" class="form-control" id="nombree" name="nombree" formControlName="nombree">
+                            <p class="alert-color" *ngIf="nombree?.hasError('required') && nombree?.touched">El nombre es requerido</p>
+                            <p class="alert-color" *ngIf="nombree?.hasError('minlength') && nombree?.touched">Debe tener al menos 5 Caracteres</p>
+                            <p class="alert-color" *ngIf="nombree?.hasError('maxlength') && nombree?.touched">Debe tener maximo 30 Caracteres</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-form-label" for="passe">Clave:</label>
+                            <input type="password" class="form-control" id="passe" name="passe" formControlName="clavee">
+                            <p class="alert-color" *ngIf="clavee?.hasError('required') && clavee?.touched">La Clave es Requerida</p>
+                            <p class="alert-color" *ngIf="clavee?.hasError('minlength') && clavee?.touched">Debe tener al menos 10 Caracteres</p>
+                            <p class="alert-color" *ngIf="clavee?.hasError('maxlength') && clavee?.touched">Debe tener maximo 40 Caracteres</p>
+                            <p class="alert-color" *ngIf="clavee?.hasError('passwordcomplexityvalidator') && clavee?.touched">Debe tener al menos un múmero y un caracter especial</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label" for="passcone">Confirmar clave:</label>
+                            <input type="password" class="form-control" id="passcone" name="passcone" formControlName="claveconfirme">
+                            <p class="alert-color" *ngIf="claveconfirme?.hasError('required') && claveconfirme?.touched">La Confirmación es Requerida</p>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <label for="db">Estatus</label>
+                            <select name="db" id="db" class="form-select" formControlName="estatus">
+                                <option value="true">Activo</option>
+                                <option value="false">Inactivo</option>
+                            </select>
+                            <p class="alert-color" *ngIf="estatus?.hasError('required') && estatus?.touched">El estatus es requerido</p> 
+                        </div>
+                        <div class="mt-3">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="usere" name="usere" value="option1"
+                                    checked disabled>
+                                <label class="form-check-label" for="usere">Usuario</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="admine" name="admine"
+                                    value="option1" formControlName="admine" [checked]="admincheck">
+                                <label class="form-check-label" for="admine">Administrador</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" formControlName="iduseredit">
+                        <button type="submit" class="btn btn-primary">Editar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+

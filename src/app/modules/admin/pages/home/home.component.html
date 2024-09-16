@@ -1,0 +1,49 @@
+<h1 class="mt-4">Inicio</h1>
+
+<div class="mb-4">
+    Estatus por farmacia:
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="bi bi-ethernet"></i>
+
+        Farmacias:
+    </div>
+    <div class="card-body">
+        <table class="table table-borderless">
+            <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Codigo</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Ultima Actualizacion</th>
+                    <th scope="col" class="text-center">Script</th>
+                    <th scope="col" class="text-center">Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of globals; let i=index">
+                    <th scope="row">{{i+1}}</th>
+                    <td>{{item.codigo}}</td>
+                    <td>{{item.idFarmacia.nombre}}</td>
+                    <td>{{item.fechahora}}</td>
+
+                    <td *ngIf="item.status == 0; else pendiente" class="text-center"><i class="bi bi-check-circle online"></i></td>
+                    <ng-template #pendiente>
+                        <td class="text-center"><i class="bi bi-hourglass-split h6 pendiente"></i></td>
+                    </ng-template>                
+                
+                    <td *ngIf="item.esMenor; else online" class="text-center"><i class="bi bi-circle-fill h6 online"></i></td>
+                    <ng-template #online>
+                        <td class="text-center"><i class="bi bi-circle-fill h6 offline"></i></td>
+                    </ng-template>
+                </tr>
+                
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
